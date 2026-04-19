@@ -15,13 +15,7 @@ st.markdown("---")
 import PyPDF2
 import re
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
 
-@st.cache_resource
-def load_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
-
-model = load_model()
 def extract_text(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
@@ -56,20 +50,15 @@ if uploaded_file:
 
     job_clean = {k: preprocess(v) for k,v in job_descriptions.items()}
 
-if model is None:
-    st.error("Model failed to load")
-    st.stop()
-resume_embedding = model.encode(resume_clean)
+documents = [resume_clean] + list(job_clean.values())
 
-job_embeddings = {
-    role: model.encode(desc)
-    for role, desc in job_clean.items()
-}
+vectorizer = TfidfVectorizer(ngram_range=(1,2))
+tfidf_matrix = vectorizer.fit_transform(documents)
 
 scores = {}
 
-for role, emb in job_embeddings.items():
-    score = cosine_similarity([resume_embedding], [emb])[0][0]
+for i, role in enumerate(job_clean.keys()):
+    score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[i+1])[0][0]
     scores[role] = score
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True) 
 threshold = 0.4
