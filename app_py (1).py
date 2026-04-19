@@ -71,7 +71,7 @@ if uploaded_file:
 
     for i, (role, score) in enumerate(sorted_scores, 1):
         st.write(f"{i}. {role} - {round(score*100,2)}%")
-     st.write(" ")    
+    st.write(" ")    
 
     if len(sorted_scores) > 0:
         best_role = sorted_scores[0][0]
