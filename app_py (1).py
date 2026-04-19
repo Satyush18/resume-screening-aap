@@ -8,6 +8,7 @@ Original file is located at
 """
 
 import streamlit as st
+st.set_page_config(layout="wide")
 st.markdown("Created by: Satyush Mohapatra")
 st.markdown("---")
 
@@ -58,17 +59,19 @@ if uploaded_file:
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
-    st.subheader("Best Role")
+    st.header("Best Role")
 
     if len(sorted_scores) > 0:
         st.write(sorted_scores[0][0])
     else:
         st.write("No suitable role found")
+    st.write(" ")    
 
-    st.subheader("Ranking")
+    st.header("Ranking")
 
     for i, (role, score) in enumerate(sorted_scores, 1):
         st.write(f"{i}. {role} - {round(score*100,2)}%")
+     st.write(" ")    
 
     if len(sorted_scores) > 0:
         best_role = sorted_scores[0][0]
@@ -84,7 +87,7 @@ if uploaded_file:
 
     missing_skills = list(job_words - resume_words)[:5]
 
-    st.subheader("Missing Skills")
+    st.header("Missing Skills")
 
     if missing_skills:
         st.write(", ".join(missing_skills))
