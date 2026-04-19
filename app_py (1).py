@@ -57,13 +57,20 @@ if uploaded_file:
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
-    st.subheader(" Best Role")
+  st.subheader("Best Role")
+
+if len(sorted_scores) > 0:
     st.write(sorted_scores[0][0])
+else:
+    st.write("No suitable role found")
 
     st.subheader("Ranking")
     for i,(role, score) in enumerate(sorted_scores,1):
         st.write(f"{i}. {role} → {round(score*100,2)}%")
-best_role = sorted_scores[0][0]
+if len(sorted_scores) > 0:
+    best_role = sorted_scores[0][0]
+else:
+    best_role = "No match found"
 
 resume_words = set(resume_clean.split())
 job_words = set(job_clean[best_role].split())
