@@ -49,20 +49,21 @@ AI-Resume-Analyzer
 
  Screenshots
 
- Upload Interface
+🔹 Upload Interface
 
+![Upload](assets/upload.png)
 
+🔹 Resume Preview
 
- Resume Preview
+![Preview](assets/preview.png)
 
+🔹 Best Role Prediction
 
+![Result](assets/result.png)
 
- Best Role Prediction
+🔹 Missing Skills Detection
 
-
-
- Missing Skills Detection
-
+![Missing Skills](assets/missing_skills.png)
 
 
 - PDF parsing may fail for complex or scanned resumes
