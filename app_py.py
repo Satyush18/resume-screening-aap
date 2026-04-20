@@ -11,19 +11,39 @@ st.set_page_config(layout="wide")
 st.markdown("### Created by: Satyush Mohapatra")
 st.markdown("---")
 
+# ------------------ SKILL MAP (GENERIC NORMALIZATION) ------------------
+SKILL_MAP = {
+    "oop": [
+        "oop", "oops", "object oriented programming",
+        "object-oriented programming", "encapsulation",
+        "inheritance", "polymorphism", "abstraction"
+    ],
+    "dp": ["dynamic programming"],
+    "ml": ["machine learning"],
+    "dl": ["deep learning"],
+    "nlp": ["natural language processing"],
+    "ai": ["artificial intelligence"],
+    "dbms": ["database management system"],
+    "dsa": ["data structures", "algorithms"],
+    "js": ["javascript"],
+    "react": ["reactjs", "react js", "react.js"],
+    "node": ["nodejs", "node js"],
+    "sql": ["mysql", "postgresql", "sqlite"],
+    "os": ["operating system", "operating systems"],
+    "cn": ["computer networks", "networking"]
+}
+
 # ------------------ SKILLS DATABASE ------------------
 SKILLS_DB = {
-
-    # ---------------- CSE / IT ----------------
-    "Data Scientist": ["python", "machine learning", "pandas", "numpy", "statistics", "data analysis"],
-    "Web Developer": ["html", "css", "javascript", "react", "node", "frontend", "backend"],
-    "Android Developer": ["java", "kotlin", "android", "firebase"],
-    "DevOps Engineer": ["docker", "kubernetes", "aws", "ci/cd", "linux"],
-    "Cyber Security": ["network security", "penetration testing", "encryption", "ethical hacking"],
+    "Data Scientist": ["python", "ml", "pandas", "numpy", "statistics"],
+    "Web Developer": ["html", "css", "js", "react", "node"],
+    "Android Developer": ["java", "kotlin", "android", "firebase", "oop"],
+    "DevOps Engineer": ["docker", "kubernetes", "aws", "ci cd"],
+    "Cyber Security": ["network security", "penetration testing", "encryption"],
     "UI/UX Designer": ["figma", "wireframe", "prototype", "design"],
-    "Software Engineer": ["data structures", "algorithms", "oops", "coding"],
-    "General Professional": ["communication", "teamwork", "leadership", "problem solving"]
+    "General Professional": ["communication", "teamwork", "leadership"]
 }
+
 # ------------------ LOAD MODEL ------------------
 @st.cache_resource
 def load_model():
@@ -47,17 +67,39 @@ def extract_text(file):
 # ------------------ PREPROCESS ------------------
 def preprocess(text):
     text = text.lower()
-    text = re.sub(r"[^a-z\s]", " ", text)
+
+    # normalize separators
+    text = text.replace("-", " ")
+    text = text.replace(".", " ")
+
+    # remove unwanted chars
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
     text = re.sub(r"\s+", " ", text)
 
-    # normalize words
-    text = text.replace("nodejs", "node")
-    text = text.replace("reactjs", "react")
+    # apply SKILL MAP normalization
+    for skill, variants in SKILL_MAP.items():
+        for v in variants:
+            pattern = r"\b" + re.escape(v) + r"\b"
+            text = re.sub(pattern, skill, text)
 
-    words = text.split()
-    words = [w for w in words if len(w) > 2]
+    return text
 
-    return " ".join(words)
+# ------------------ SKILL DETECTION ------------------
+def detect_skills(resume_text, job_skills):
+    clean_text = preprocess(resume_text)
+
+    found = []
+    missing = []
+
+    for skill in job_skills:
+        skill = skill.lower()
+
+        if skill in clean_text:
+            found.append(skill)
+        else:
+            missing.append(skill)
+
+    return found, missing, clean_text
 
 # ------------------ UI ------------------
 st.title("Resume Screening System")
@@ -76,8 +118,8 @@ if uploaded_file:
     st.write("### Resume Preview")
     st.write(resume_text[:300])
 
+    # preprocess once
     resume_clean = preprocess(resume_text)
-    resume_words = set(resume_clean.split())
 
     # ------------------ MODEL CHECK ------------------
     if model is None:
@@ -130,37 +172,22 @@ if uploaded_file:
         st.success(f"Best match: {best_role}")
     else:
         st.warning("No strong match found")
-    # ---------------- RESUME SCORE ----------------
-    if best_role:
-        raw_score = sorted_scores[0][1]
-
-    # normalize (-1 to 1 → 0 to 1)
-        normalized_score = (raw_score + 1) / 2
-        score_percent = normalized_score * 100
-
-        st.header("Resume Score")
-        st.info(f"Match Score: {round(score_percent, 2)}%")   
 
     # ------------------ TOP 3 ------------------
     st.header("Top 3 Recommended Roles")
 
-    top_3 = sorted_scores[:3]
-
-    for i, (role, score) in enumerate(top_3, 1):
-        st.write(f"{i}. {role} ({round(score*100,2)}%)")
+    for i, (role, score) in enumerate(sorted_scores[:3], 1):
+        st.write(f"{i}. {role} ({round(score * 100, 2)}%)")
 
     # ------------------ RANKING ------------------
     st.header("Ranking")
 
     for i, (role, score) in enumerate(sorted_scores, 1):
-
-        # ✅ FIXED: normalize score (-1 to 1 → 0 to 1)
         normalized_score = (score + 1) / 2
-
         progress_value = int(normalized_score * 100)
 
         st.progress(progress_value)
-        st.write(f"{i}. {role} ({round(score*100,2)}%)")
+        st.write(f"{i}. {role} ({round(score * 100, 2)}%)")
 
     # ------------------ MISSING SKILLS ------------------
     st.header("Missing Skills")
@@ -168,13 +195,8 @@ if uploaded_file:
     if best_role and best_role in SKILLS_DB:
 
         job_skills = SKILLS_DB[best_role]
-        missing_skills = []
 
-        for skill in job_skills:
-            skill_words = skill.lower().split()
-
-            if not all(word in resume_words for word in skill_words):
-                missing_skills.append(skill)
+        found_skills, missing_skills, _ = detect_skills(resume_text, job_skills)
 
         if missing_skills:
             st.warning(", ".join(missing_skills))
