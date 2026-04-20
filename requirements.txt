@@ -1,8 +1,6 @@
 streamlit
 PyPDF2
 scikit-learn
-numpy
-pandas
 sentence-transformers
 torch
-transformers
+
