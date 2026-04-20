@@ -43,10 +43,27 @@ Project Structure
 
 AI-Resume-Analyzer
 
-├── app.py
-├── requirements.txt
-├── README.md
+1. app.py
+2. requirements.txt
+3. README.md
 
+ Screenshots
+
+ Upload Interface
+
+"Upload" (assets/upload.png)
+
+ Resume Preview
+
+"Preview" (assets/preview.png)
+
+ Best Role Prediction
+
+"Result" (assets/result.png)
+
+ Missing Skills Detection
+
+"Missing Skills" (assets/missing_skills.png)
 
 - PDF parsing may fail for complex or scanned resumes
 - No job description matching
