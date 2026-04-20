@@ -112,7 +112,7 @@ if uploaded_file:
     resume_words = set(resume_clean.split())
 
     if best_role in job_clean:
-        job_words = set(job_skills.get[best_role,[])
+        job_words = set(job_skills.get(best_role,[]))
     else:
         job_words = set()
 
