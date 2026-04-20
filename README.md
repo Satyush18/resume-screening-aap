@@ -47,6 +47,7 @@ AI-Resume-Analyzer
 ├── requirements.txt
 ├── README.md
 
+
 - PDF parsing may fail for complex or scanned resumes
 - No job description matching
 - Static skill database
