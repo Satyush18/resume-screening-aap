@@ -14,8 +14,9 @@ st.markdown("---")
 
 import PyPDF2
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 def extract_text(file):
     reader = PyPDF2.PdfReader(file)
@@ -40,22 +41,15 @@ def preprocess(text):
     words = [w for w in words if len(w) > 2]
 
     return " ".join(words)
-job_descriptions = {
-    "Data Scientist": "python machine learning pandas numpy statistics data analysis scikit learn",
-
-    "Web Developer": "html css javascript react node express mongodb frontend backend web development",
-
-    "Android Developer": "java kotlin android studio mobile app development",
-
-    "DevOps Engineer": "docker kubernetes aws ci cd linux cloud deployment",
-
-    "Cyber Security": "network security ethical hacking penetration testing encryption",
-
-    "UI/UX Designer": "figma wireframe prototyping user interface user experience design",
-
-    "General Professional": "communication teamwork leadership problem solving management skills"
+SKILLS_DB = {
+    "Data Scientist": ["python", "machine learning", "pandas", "numpy", "statistics"],
+    "Web Developer": ["html", "css", "javascript", "react", "node"],
+    "Android Developer": ["java", "kotlin", "android", "firebase"],
+    "DevOps Engineer": ["docker", "kubernetes", "aws", "ci/cd"],
+    "Cyber Security": ["network security", "penetration testing", "encryption"],
+    "UI/UX Designer": ["figma", "wireframe", "prototyping", "design"],
+    "General Professional": ["communication", "teamwork", "leadership"]
 }
-
 st.title("Resume Screening System")
 
 uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
@@ -72,22 +66,22 @@ if uploaded_file:
 
     resume_clean = preprocess(resume_text)
 
-    job_clean = {k: preprocess(v) for k, v in job_descriptions.items()}
+    job_clean = {k: preprocess(v) for k, v in SKILLS_DB.items()}
 
-    documents = [resume_clean] + list(job_clean.values())
     # TF-IDF
-    vectorizer = TfidfVectorizer(ngram_range=(1, 2))
-    tfidf_matrix = vectorizer.fit_transform(documents)
+  # AI-based embeddings
+resume_embedding = model.encode(resume_clean)
 
-    scores = {}
+scores = {}
 
-    for i, role in enumerate(job_clean.keys()):
-        score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[i+1])[0][0]
-        scores[role] = score
+for role, text in job_clean.items():
+    job_embedding = model.encode(text)
+    score = cosine_similarity([resume_embedding], [job_embedding])[0][0]
+    scores[role] = score
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
-    threshold = 0.01
+    threshold = 0.3
 
     # ---------------- BEST ROLE ---------------- #
     if sorted_scores and sorted_scores[0][1] >= threshold:
@@ -124,18 +118,25 @@ if uploaded_file:
         st.write(f"{i}. {role} ({round(score*100,2)}%)")
 
     # ---------------- MISSING SKILLS ---------------- #
+# MISSING SKILLS (AI CLEAN VERSION)
+
 resume_words = set(resume_clean.split())
 
-if best_role in job_clean:
-    job_words = set(job_clean[best_role].split())
-else:
-    job_words = set()
+if best_role in SKILLS_DB:
+    job_skills = SKILLS_DB[best_role]
 
-missing_skills = [w for w in (job_words - resume_words) if len(w) > 2][:5]
+    missing_skills = []
+    for skill in job_skills:
+        skill_words = skill.lower().split()
+        
+        if not all(word in resume_words for word in skill_words):
+            missing_skills.append(skill)
+else:
+    missing_skills = []
 
 st.header("Missing Skills")
 
 if missing_skills:
     st.warning(", ".join(missing_skills))
 else:
-    st.success("No missing skills 🎉")
+    st.success("No missing skills ")
