@@ -18,7 +18,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 @st.cache_resource
 def load_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
+    try:
+        model = SentenceTransformer('all-MiniLM-L6-v2')
+        return model
+    except Exception as e:
+        st.error(f"Model load failed: {e}")
+        return None
 
 model = load_model()
 def extract_text(file):
@@ -72,16 +77,23 @@ if uploaded_file:
     job_clean = {k: preprocess(v) for k, v in SKILLS_DB.items()}
 
   # AI-based embeddings
-if 'model' in globals():
-    resume_embedding = model.encode(resume_clean)
-else:
+if model is None:
     st.error("Model not loaded properly")
     st.stop()
 
+try:
+    resume_embedding = model.encode(resume_clean)
+except Exception as e:
+    st.error(f"Encoding failed: {e}")
+    st.stop()
 scores = {}
 
 for role, text in job_clean.items():
+    try:
     job_embedding = model.encode(text)
+except Exception as e:
+    st.error(f"Job encoding failed: {e}")
+    st.stop()
     score = cosine_similarity([resume_embedding], [job_embedding])[0][0]
     scores[role] = score
 
