@@ -31,7 +31,7 @@ def preprocess(text):
     words = text.split()
     return " ".join(words)
 
-job_descriptions = {
+job_skills = {
     "Data Scientist": "Python machine learning pandas numpy statistics",
     "Web Developer": "HTML CSS JavaScript React Node",
     "Android Developer": "Java Kotlin Android Studio",
