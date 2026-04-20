@@ -101,6 +101,7 @@ if uploaded_file:
 
         score = cosine_similarity([resume_embedding], [job_embedding])[0][0]
         scores[role] = score
+    best_role = None    
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
@@ -142,7 +143,7 @@ if uploaded_file:
     # ---------------- MISSING SKILLS ---------------- #
 # MISSING SKILLS (AI CLEAN VERSION)
 
-if best_role and best_role in SKILLS_DB:
+if best_role is not None and best_role in SKILLS_DB:
     job_skills = SKILLS_DB[best_role]
 
     missing_skills = []
