@@ -67,8 +67,9 @@ if uploaded_file:
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     threshold = 0.4
     
- if sorted_scores:
-    if sorted_scores[0][1] >= threshold:
+if sorted_scores:
+    top_score = sorted_scores[0][1]
+    if top_score >= threshold:
         best_role = sorted_scores[0][0]
     else:
         best_role = None
