@@ -22,38 +22,6 @@ SKILLS_DB = {
     "Cyber Security": ["network security", "penetration testing", "encryption", "ethical hacking"],
     "UI/UX Designer": ["figma", "wireframe", "prototype", "design"],
     "Software Engineer": ["data structures", "algorithms", "oops", "coding"],
-
-    # ---------------- ECE / ELECTRONICS ----------------
-    "Embedded Engineer": ["embedded systems", "arduino", "microcontroller", "c", "firmware"],
-    "VLSI Engineer": ["vlsi", "verilog", "fpga", "digital design"],
-    "IoT Developer": ["iot", "sensors", "arduino", "raspberry pi", "embedded systems"],
-    "Electronics Engineer": ["circuits", "analog", "digital electronics", "signal processing"],
-
-    # ---------------- ELECTRICAL ----------------
-    "Electrical Engineer": ["power systems", "electrical machines", "control systems", "circuits"],
-    "Power Engineer": ["power generation", "transmission", "distribution", "grid"],
-    
-    # ---------------- MECHANICAL ----------------
-    "Mechanical Engineer": ["thermodynamics", "fluid mechanics", "cad", "solidworks", "manufacturing"],
-    "Automobile Engineer": ["automobile", "engine", "vehicle dynamics", "mechanics"],
-    "Robotics Engineer": ["robotics", "automation", "control systems", "sensors"],
-
-    # ---------------- CIVIL ----------------
-    "Civil Engineer": ["construction", "structural analysis", "autocad", "surveying"],
-    "Structural Engineer": ["structures", "analysis", "design", "concrete"],
-    "Site Engineer": ["construction site", "project management", "civil"],
-
-    # ---------------- BUSINESS / MANAGEMENT ----------------
-    "Business Analyst": ["excel", "data analysis", "business intelligence", "sql"],
-    "Marketing Executive": ["marketing", "branding", "digital marketing", "seo"],
-    "HR": ["recruitment", "human resources", "management", "communication"],
-    "Finance Analyst": ["finance", "accounting", "investment", "excel"],
-
-    # ---------------- LAW ----------------
-    "Lawyer": ["law", "legal research", "litigation", "contracts", "court"],
-    "Legal Advisor": ["compliance", "legal drafting", "case law", "regulations"],
-
-    # ---------------- GENERAL ----------------
     "General Professional": ["communication", "teamwork", "leadership", "problem solving"]
 }
 # ------------------ LOAD MODEL ------------------
