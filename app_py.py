@@ -129,7 +129,7 @@ if uploaded_file:
     else:
         st.warning("No strong match found")
     # ---------------- RESUME SCORE ----------------
-   if best_role:
+    if best_role:
         raw_score = sorted_scores[0][1]
 
     # normalize (-1 to 1 → 0 to 1)
