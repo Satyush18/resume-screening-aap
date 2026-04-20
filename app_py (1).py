@@ -76,12 +76,12 @@ if uploaded_file:
             best_role = None
     else:
         best_role = None
-st.header(" Best Role")
+st.header("Best Role")
 
 if best_role:
     st.success(best_role)
 else:
-    st.error(" No suitable role found")
+    st.error("No suitable role found")
 st.header("Top 3 Recommended Roles")
 
 top_3 = sorted_scores[:3]
