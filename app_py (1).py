@@ -28,31 +28,32 @@ def extract_text(file):
 def preprocess(text):
     text = text.lower()
 
-    # remove symbols
     text = re.sub(r'[^a-z\s]', ' ', text)
 
-    # remove extra spaces
     text = re.sub(r'\s+', ' ', text)
 
-    # normalize tech terms
     text = text.replace("nodejs", "node")
     text = text.replace("reactjs", "react")
 
-    # split words
     words = text.split()
 
-    # ❗ remove garbage words (IMPORTANT)
     words = [w for w in words if len(w) > 2]
 
     return " ".join(words)
 job_descriptions = {
-    "Data Scientist": "Python machine learning pandas numpy statistics",
-    "Web Developer": "HTML CSS JavaScript React Node",
-    "Android Developer": "Java Kotlin Android Studio",
-    "DevOps Engineer": "Docker Kubernetes AWS CI/CD",
-    "Cyber Security": "network security ethical hacking encryption",
-    "UI/UX Designer": "Figma wireframe prototyping design",
-    "General Professional": "communication teamwork problem solving leadership"
+    "Data Scientist": "python machine learning pandas numpy statistics data analysis scikit learn",
+
+    "Web Developer": "html css javascript react node express mongodb frontend backend web development",
+
+    "Android Developer": "java kotlin android studio mobile app development",
+
+    "DevOps Engineer": "docker kubernetes aws ci cd linux cloud deployment",
+
+    "Cyber Security": "network security ethical hacking penetration testing encryption",
+
+    "UI/UX Designer": "figma wireframe prototyping user interface user experience design",
+
+    "General Professional": "communication teamwork leadership problem solving management skills"
 }
 
 st.title("Resume Screening System")
@@ -130,8 +131,7 @@ if uploaded_file:
     else:
         job_words = set()
 
-    missing_skills = list(job_words - resume_words)[:5]
-
+    missing_skills = [w for w in (job_words - resume_words) if len(w) > 3][:5]
     st.header("Missing Skills")
 
     if missing_skills:
