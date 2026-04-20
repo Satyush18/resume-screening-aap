@@ -43,7 +43,6 @@ job_descriptions = {
 st.title("Resume Screening System")
 uploaded_file = st.file_uploader("Upload Resume", type=["pdf"], key="resume_upload")
 if uploaded_file:
-
     resume_text = extract_text(uploaded_file)
 
     if not resume_text:
@@ -66,16 +65,15 @@ if uploaded_file:
         scores[role] = score
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-threshold = 0.4
+    threshold = 0.4
 
-if sorted_scores:
+   if sorted_scores:
     if sorted_scores[0][1] >= threshold:
         best_role = sorted_scores[0][0]
     else:
         best_role = None
 else:
     best_role = None
-
 st.header(" Best Role")
 
 if best_role:
