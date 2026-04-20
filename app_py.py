@@ -6,12 +6,10 @@ import re
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 
-# ------------------ PAGE CONFIG ------------------
 st.set_page_config(layout="wide")
 st.markdown("### Created by: Satyush Mohapatra")
 st.markdown("---")
 
-# ------------------ SKILL MAP (GENERIC NORMALIZATION) ------------------
 SKILL_MAP = {
     "oop": [
         "oop", "oops", "object oriented programming",
@@ -33,7 +31,6 @@ SKILL_MAP = {
     "cn": ["computer networks", "networking"]
 }
 
-# ------------------ SKILLS DATABASE ------------------
 SKILLS_DB = {
     "Data Scientist": ["python", "ml", "pandas", "numpy", "statistics"],
     "Web Developer": ["html", "css", "js", "react", "node"],
@@ -44,7 +41,6 @@ SKILLS_DB = {
     "General Professional": ["communication", "teamwork", "leadership"]
 }
 
-# ------------------ LOAD MODEL ------------------
 @st.cache_resource
 def load_model():
     try:
@@ -55,7 +51,6 @@ def load_model():
 
 model = load_model()
 
-# ------------------ PDF TEXT EXTRACTION ------------------
 def extract_text(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
@@ -64,19 +59,15 @@ def extract_text(file):
             text += page.extract_text()
     return text
 
-# ------------------ PREPROCESS ------------------
 def preprocess(text):
     text = text.lower()
 
-    # normalize separators
     text = text.replace("-", " ")
     text = text.replace(".", " ")
 
-    # remove unwanted chars
     text = re.sub(r"[^a-z0-9\s]", " ", text)
     text = re.sub(r"\s+", " ", text)
 
-    # apply SKILL MAP normalization
     for skill, variants in SKILL_MAP.items():
         for v in variants:
             pattern = r"\b" + re.escape(v) + r"\b"
@@ -84,7 +75,6 @@ def preprocess(text):
 
     return text
 
-# ------------------ SKILL DETECTION ------------------
 def detect_skills(resume_text, job_skills):
     clean_text = preprocess(resume_text)
 
@@ -101,12 +91,10 @@ def detect_skills(resume_text, job_skills):
 
     return found, missing, clean_text
 
-# ------------------ UI ------------------
 st.title("Resume Screening System")
 
 uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
 
-# ------------------ MAIN LOGIC ------------------
 if uploaded_file:
 
     resume_text = extract_text(uploaded_file)
@@ -118,10 +106,8 @@ if uploaded_file:
     st.write("### Resume Preview")
     st.write(resume_text[:300])
 
-    # preprocess once
     resume_clean = preprocess(resume_text)
 
-    # ------------------ MODEL CHECK ------------------
     if model is None:
         st.error("Model not loaded properly")
         st.stop()
@@ -132,7 +118,6 @@ if uploaded_file:
         st.error(f"Encoding failed: {e}")
         st.stop()
 
-    # ------------------ SCORING ------------------
     scores = {}
 
     for role, skills in SKILLS_DB.items():
@@ -152,14 +137,12 @@ if uploaded_file:
 
         scores[role] = score
 
-    # ------------------ SORT ------------------
     sorted_scores = sorted(
         scores.items(),
         key=lambda x: x[1],
         reverse=True
     )
 
-    # ------------------ BEST ROLE ------------------
     best_role = None
     threshold = 0.2
 
@@ -173,13 +156,11 @@ if uploaded_file:
     else:
         st.warning("No strong match found")
 
-    # ------------------ TOP 3 ------------------
     st.header("Top 3 Recommended Roles")
 
     for i, (role, score) in enumerate(sorted_scores[:3], 1):
         st.write(f"{i}. {role} ({round(score * 100, 2)}%)")
 
-    # ------------------ RANKING ------------------
     st.header("Ranking")
 
     for i, (role, score) in enumerate(sorted_scores, 1):
@@ -189,7 +170,6 @@ if uploaded_file:
         st.progress(progress_value)
         st.write(f"{i}. {role} ({round(score * 100, 2)}%)")
 
-    # ------------------ MISSING SKILLS ------------------
     st.header("Missing Skills")
 
     if best_role and best_role in SKILLS_DB:
