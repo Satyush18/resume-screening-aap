@@ -41,11 +41,7 @@ job_descriptions = {
 }
 
 st.title("Resume Screening System")
-
-uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
-
-uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
-
+uploaded_file = st.file_uploader("Upload Resume", type=["pdf"], key="resume_upload")
 if uploaded_file:
 
     resume_text = extract_text(uploaded_file)
