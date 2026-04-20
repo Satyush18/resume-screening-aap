@@ -142,7 +142,7 @@ if uploaded_file:
     # ---------------- MISSING SKILLS ---------------- #
 # MISSING SKILLS (AI CLEAN VERSION)
 
-if best_role in SKILLS_DB:
+if best_role and best_role in SKILLS_DB:
     job_skills = SKILLS_DB[best_role]
 
     missing_skills = []
