@@ -72,7 +72,7 @@ if uploaded_file:
 
     sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
-    threshold = 0.4
+    threshold = 0.01
 
     # ---------------- BEST ROLE ---------------- #
     if sorted_scores and sorted_scores[0][1] >= threshold:
