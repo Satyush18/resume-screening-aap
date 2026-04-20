@@ -3,4 +3,4 @@ PyPDF2
 scikit-learn
 sentence-transformers
 torch
-
+torchvision
