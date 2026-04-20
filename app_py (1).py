@@ -124,17 +124,18 @@ if uploaded_file:
         st.write(f"{i}. {role} ({round(score*100,2)}%)")
 
     # ---------------- MISSING SKILLS ---------------- #
-    resume_words = set(resume_clean.split())
+   resume_words = set(resume_clean.split())
 
-    if best_role in job_clean:
-        job_words = set(job_descriptions.get(best_role,[]))
-    else:
-        job_words = set()
+if best_role in job_clean:
+    job_words = set(job_clean[best_role].split())
+else:
+    job_words = set()
 
-    missing_skills = [w for w in (job_words - resume_words) if len(w) > 2][:5]
-    st.header("Missing Skills")
+missing_skills = [w for w in (job_words - resume_words) if len(w) > 2][:5]
 
-    if missing_skills:
-        st.warning(", ".join(missing_skills))
-    else:
-        st.success("No missing skills 🎉")
+st.header("Missing Skills")
+
+if missing_skills:
+    st.warning(", ".join(missing_skills))
+else:
+    st.success("No missing skills ")
