@@ -57,7 +57,7 @@ if not resume_text.strip():
 
 # DEBUG (IMPORTANT)
 st.write("Resume Preview:", resume_text[:300])
-    resume_clean = preprocess(resume_text)
+resume_clean = preprocess(resume_text)
 
     job_clean = {k: preprocess(v) for k, v in job_descriptions.items()}
 
